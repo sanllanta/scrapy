@@ -15,3 +15,4 @@ class UniItem(Item):
 class DependencyItem(Item):
     name = Field()
     teacher_urls = Field()
+    main_url = Field()
