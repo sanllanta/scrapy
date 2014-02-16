@@ -11,3 +11,7 @@ class UniItem(Item):
     email = Field()
     extension = Field()
     website = Field()
+
+class DependencyItem(Item):
+    name = Field()
+    teacher_urls = Field()

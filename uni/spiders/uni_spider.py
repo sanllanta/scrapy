@@ -1,6 +1,7 @@
 from scrapy.spider import Spider,BaseSpider
 from scrapy.selector import Selector
 from uni.items import UniItem
+from uni.items import DependencyItem
 from scrapy.http    import Request
 
 class UniSpider(BaseSpider):
@@ -30,14 +31,21 @@ class UniSpider(BaseSpider):
                 if 'uniandes.edu.co' in link:
                     request=Request(str(link), callback=self.parse_page)
                     request.meta['dependency']= dependency[0]
+                    request.meta['url']= link
                     yield request
 
 
     def parse_page(self, response):
-        dependency = response.meta['dependency']
-
+        dependency = DependencyItem()
+        dependency['name'] =  response.meta['dependency']
         sel = Selector(response)
-        sites = sel.xpath('//body')
+        links = sel.xpath('//a/@href').extract()
+        dependency['teacher_urls'] = []
+        
+        print '--'+dependency['name']+'--'
 
-        for site in sites:
-            print site
+        for link in links:
+            if ('planta' in link) or ('profesores' in link):
+                print '\t-'+link
+                dependency['teacher_urls'].append(link)
+        return dependency
